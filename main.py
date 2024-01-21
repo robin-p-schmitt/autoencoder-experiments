@@ -18,7 +18,7 @@ def train(data, model, optimizer, num_epochs):
   for epoch in range(num_epochs):
     for batch in data.data_loader:
       # flatten images and move to device
-      images = batch[0].view(batch[0].size(0), -1).cuda()
+      images = batch[0].cuda()
 
       # forward pass and loss
       outputs = model(images)
@@ -47,7 +47,7 @@ def inference(data, model, saved_model_path):
   # visualize some images
   with torch.no_grad():
     for batch in data.data_loader:
-      images = batch[0].view(batch[0].size(0), -1).cuda()
+      images = batch[0].cuda()
       outputs = model(images)
       outputs = outputs.view(outputs.size(0), *data.img_size)
       for i in range(5):
@@ -61,7 +61,7 @@ def inference(data, model, saved_model_path):
 
 def main():
   image_data = ImageData(image_folder="data/emojis/image/cleaned", batch_size=32, img_size=(72, 72))
-  model = UndercompleteAutoencoder(input_size=math.prod(image_data.img_size), hidden_size=100).cuda()
+  model = UndercompleteAutoencoder(input_size=image_data.img_size, hidden_size=100).cuda()
   optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
   num_epochs = 20
 
