@@ -8,6 +8,7 @@ class DataPreparer:
           self,
           source_data_path: str,
           target_data_path: str,
+          dev_image_names: Tuple[str, ...],
           target_classes: Tuple[str, ...],
           filter_img_size: Optional[Tuple[int, int]] = None,
           filter_names: Optional[Tuple[str, ...]] = None,
@@ -17,16 +18,28 @@ class DataPreparer:
     self.filter_names = filter_names
     self.source_data_path = source_data_path
     self.target_data_path = target_data_path
+    self.dev_image_names = dev_image_names
 
   def prepare(self):
     if not os.path.exists(self.target_data_path):
       os.makedirs(self.target_data_path)
 
+    train_path = os.path.join(self.target_data_path, "train")
+    if not os.path.exists(train_path):
+      os.makedirs(train_path)
+
+    dev_path = os.path.join(self.target_data_path, "dev")
+    if not os.path.exists(dev_path):
+      os.makedirs(dev_path)
+
     for target_class in self.target_classes:
       source_class_path = os.path.join(self.source_data_path, target_class)
-      target_class_path = os.path.join(self.target_data_path, target_class)
-      if not os.path.exists(target_class_path):
-        os.makedirs(target_class_path)
+      train_class_path = os.path.join(train_path, target_class)
+      if not os.path.exists(train_class_path):
+        os.makedirs(train_class_path)
+      dev_class_path = os.path.join(dev_path, target_class)
+      if not os.path.exists(dev_class_path):
+        os.makedirs(dev_class_path)
 
       for path in os.listdir(source_class_path):
         if not self.filter_by_name(path):
@@ -36,7 +49,10 @@ class DataPreparer:
         if not self.filter_by_image_size(img):
           continue
 
-        img.save(os.path.join(target_class_path, path))
+        if path in self.dev_image_names:
+          img.save(os.path.join(dev_class_path, path))
+        else:
+          img.save(os.path.join(train_class_path, path))
 
   def filter_by_image_size(self, img: Image) -> bool:
     if self.filter_img_size is None:
@@ -62,6 +78,7 @@ def main():
   data_preparer = DataPreparer(
     source_data_path="data/emojis/image",
     target_data_path="data/emojis/image/cleaned",
+    dev_image_names=tuple([f"{i}.png" for i in [3, 20, 29, 36]]),
     target_classes=("Apple",),
     filter_img_size=(72, 72),
     filter_names=tuple([f"{i}.png" for i in filter_names]),
