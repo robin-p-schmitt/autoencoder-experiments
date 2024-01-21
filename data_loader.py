@@ -14,7 +14,8 @@ def custom_loader(path):
 class ImageData:
   def __init__(self, image_folder: str, batch_size: int, img_size: Tuple[int, int], alpha: bool = True):
     self.image_folder = image_folder
-    self.img_size = (4,) + img_size if alpha else (3,) + img_size
+    self.num_channels = 4 if alpha else 3
+    self.img_size = (self.num_channels,) + img_size
 
     transform = transforms.Compose([
       transforms.ToTensor(),

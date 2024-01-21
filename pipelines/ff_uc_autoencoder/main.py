@@ -1,6 +1,6 @@
 import torch
 
-from models.uc_autoencoder import ShallowFFUcAE, DeepFFUcAE
+from models.ff_uc_autoencoder import ShallowFFUcAE, DeepFFUcAE
 from data_loader import ImageData
 
 from pipelines.train import train
