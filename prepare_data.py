@@ -1,6 +1,7 @@
 import os
 from PIL import Image
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Dict
+import numpy as np
 
 
 class DataPreparer:
@@ -8,7 +9,7 @@ class DataPreparer:
           self,
           source_data_path: str,
           target_data_path: str,
-          dev_image_names: Tuple[str, ...],
+          dev_image_names: Dict[str, Tuple[str, ...]],
           target_classes: Tuple[str, ...],
           filter_img_size: Optional[Tuple[int, int]] = None,
           filter_names: Optional[Tuple[str, ...]] = None,
@@ -49,7 +50,7 @@ class DataPreparer:
         if not self.filter_by_image_size(img):
           continue
 
-        if path in self.dev_image_names:
+        if path in self.dev_image_names[target_class]:
           img.save(os.path.join(dev_class_path, path))
         else:
           img.save(os.path.join(train_class_path, path))
@@ -72,14 +73,17 @@ def main():
   :return:
   """
 
-  outlier_names = [38, 53, 56, 57, 61, 79, 80, 84, 93, 95]  # outlier faces, e.g. not yellow
-  filter_names = [i for i in range(96) if i not in outlier_names]  # non-outlier face emojis
+  filter_names = [i for i in range(1, 1000)]
+  target_classes = ("Apple", "Google", "Facebook", "Samsung", "Twitter", "Windows")
+  dev_image_names = {
+    class_: [f"{i}.png" for i in np.random.choice(filter_names, size=10, replace=False)] for class_ in target_classes
+  }
 
   data_preparer = DataPreparer(
     source_data_path="data/emojis/image",
     target_data_path="data/emojis/image/cleaned",
-    dev_image_names=tuple([f"{i}.png" for i in [3, 20, 29, 36]]),
-    target_classes=("Apple",),
+    dev_image_names=dev_image_names,
+    target_classes=target_classes,
     filter_img_size=(72, 72),
     filter_names=tuple([f"{i}.png" for i in filter_names]),
   )

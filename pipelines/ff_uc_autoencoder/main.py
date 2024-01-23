@@ -3,8 +3,7 @@ import torch
 from models.ff_uc_autoencoder import ShallowFFUcAE, DeepFFUcAE
 from data_loader import ImageData
 
-from pipelines.train import train
-from pipelines.inference import inference
+from pipelines.train import Trainer
 
 
 def run_shallow_ff_uc_ae():
@@ -14,8 +13,8 @@ def run_shallow_ff_uc_ae():
   optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
   num_epochs = 30
 
-  saved_model_path = train(train_data, model, optimizer, num_epochs)
-  inference(dev_data, model, saved_model_path)
+  trainer = Trainer(train_data, dev_data, model, optimizer, num_epochs)
+  trainer.train()
 
 
 def run_deep_ff_uc_ae():
@@ -25,5 +24,5 @@ def run_deep_ff_uc_ae():
   optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
   num_epochs = 30
 
-  saved_model_path = train(train_data, model, optimizer, num_epochs)
-  inference(dev_data, model, saved_model_path)
+  trainer = Trainer(train_data, dev_data, model, optimizer, num_epochs)
+  trainer.train()
