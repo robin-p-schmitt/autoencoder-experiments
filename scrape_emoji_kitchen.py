@@ -25,6 +25,9 @@ if not os.path.exists(mixmoji_data_path):
 mixmoji_data_path = "data/mixmoji/mixmoji"
 if not os.path.exists(mixmoji_data_path):
   os.makedirs(mixmoji_data_path)
+emoji_data_path = "data/mixmoji/emoji"
+if not os.path.exists(emoji_data_path):
+  os.makedirs(emoji_data_path)
 
 # Initialize WebDriver
 driver = webdriver.Chrome('/usr/bin/chromedriver')
@@ -45,6 +48,12 @@ try:
   time.sleep(2)
 
   emoji_buttons = driver.find_elements(By.CSS_SELECTOR, '#emoji-container #emoji-content div')
+  for emoji_button in emoji_buttons:
+    name = emoji_button.get_attribute('id')
+    emoji_img = emoji_button.find_element(By.CSS_SELECTOR, 'img')
+    link = emoji_img.get_attribute('src')
+    download_image(link, emoji_data_path, f"{name}.png")
+
   for emoji_button in emoji_buttons:
     emoji_button.click()
 

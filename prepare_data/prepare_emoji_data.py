@@ -73,7 +73,7 @@ def main():
   :return:
   """
 
-  filter_names = [i for i in range(1, 1000)]
+  filter_names = [i for i in range(1, 1328)]  # all emojis without symbols and flags
   target_classes = ("Apple", "Google", "Facebook", "Samsung", "Twitter", "Windows")
   dev_image_names = {
     class_: [f"{i}.png" for i in np.random.choice(filter_names, size=10, replace=False)] for class_ in target_classes
