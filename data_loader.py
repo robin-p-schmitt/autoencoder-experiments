@@ -14,17 +14,16 @@ augment_opts_presets = {
     "crop": {"scale": (0.3, 1.0), "ratio": (1.0, 1.0)},
   },
   "v3": {
-    "rot": 30,
-    "color": {"brightness": 0.3, "contrast": 0.3, "saturation": 0.3, "hue": 0.3},
+    "rot": 60,
     "vert_flip": 0.5,
     "crop": {"scale": (0.3, 1.0), "ratio": (1.0, 1.0)},
   },
   "v4": {
-    "rot": 30,
-    "color": {"saturation": 0.3, "hue": 0.3},
+    "rot": 90,
     "vert_flip": 0.5,
-    "crop": {"scale": (0.3, 1.0), "ratio": (1.0, 1.0)},
-  }
+    "horiz_flip": 0.5,
+    "crop": {"scale": (0.3, 1.0), "ratio": (0.9, 1.1)},
+  },
 }
 
 
@@ -66,6 +65,8 @@ class ImageData:
         transform.append(transforms.ColorJitter(**augment_opts["color"]))
       if "vert_flip" in augment_opts:
         transform.append(transforms.RandomVerticalFlip(augment_opts["vert_flip"]))
+      if "horiz_flip" in augment_opts:
+        transform.append(transforms.RandomHorizontalFlip(augment_opts["horiz_flip"]))
       if "gauss" in augment_opts:
         transform.append(transforms.GaussianBlur(**augment_opts["gauss"]))
       if "crop" in augment_opts:
